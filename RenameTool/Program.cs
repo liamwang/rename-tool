@@ -27,6 +27,8 @@ namespace RenameTool
             srcProjectName = CmdReader.ReadLine("请输入原项目名称：");
             newProjectName = CmdReader.ReadLine("请输入新项目名称：");
 
+            Console.WriteLine("正在处理...");
+
             replaceRegex = new Regex(
                 srcProjectName,
                 RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
@@ -37,8 +39,8 @@ namespace RenameTool
 
             Replace(srcProjectPath);
 
-            Console.WriteLine($"操作完成！\r\n新的项目保存在：{newProjectPath}");
-            Console.Write($"请按任意键退出！");
+            Console.WriteLine($"完成！\r\n新的项目保存在：{newProjectPath}");
+            Console.Write("请按任意键退出！");
             Console.ReadKey();
         }
 
@@ -67,7 +69,7 @@ namespace RenameTool
 
         static void ReplaceFile(string srcFile, string destFile)
         {
-            Console.WriteLine($"From：{srcFile}\r\nTo：{destFile}");
+            // Console.WriteLine($"From：{srcFile}\r\nTo：{destFile}");
 
             Directory.CreateDirectory(Path.GetDirectoryName(destFile));
 
