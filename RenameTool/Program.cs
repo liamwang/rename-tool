@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace RenameTool
 
         static void Main(string[] args)
         {
-            Console.Title = "项目命名工具";
+            Console.Title = "项目重命名工具";
 
             config = Configuration.Build();
 
@@ -30,8 +31,6 @@ namespace RenameTool
                 srcProjectName,
                 RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
 
-            Console.WriteLine("提示：重命名后的项目将保存在桌面！");
-
             newProjectPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 newProjectName);
@@ -39,7 +38,7 @@ namespace RenameTool
             Replace(srcProjectPath);
 
             Console.WriteLine($"操作完成！\r\n新的项目保存在：{newProjectPath}");
-            Console.Write($"按任意键退出！");
+            Console.Write($"请按任意键退出！");
             Console.ReadKey();
         }
 
@@ -68,7 +67,7 @@ namespace RenameTool
 
         static void ReplaceFile(string srcFile, string destFile)
         {
-            Console.WriteLine($"原：{srcFile}\r\n新：{destFile}");
+            Console.WriteLine($"From：{srcFile}\r\nTo：{destFile}");
 
             Directory.CreateDirectory(Path.GetDirectoryName(destFile));
 
