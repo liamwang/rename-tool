@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenameTool", "RenameTool\RenameTool.csproj", "{67A2A74F-FCA2-4F34-8157-A386E29AC056}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67A2A74F-FCA2-4F34-8157-A386E29AC056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A2A74F-FCA2-4F34-8157-A386E29AC056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A2A74F-FCA2-4F34-8157-A386E29AC056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A2A74F-FCA2-4F34-8157-A386E29AC056}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {20D6A595-D444-4744-993D-5D114293FFC5}
+	EndGlobalSection
+EndGlobal
