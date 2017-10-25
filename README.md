@@ -9,10 +9,9 @@ Clone 此项目后直接运行，然后按下图操作（超简单）：
 
 ## 如何更好地使用
 
-为了更好地重复使用，可以制作一个可执行脚本。以 Widows 平台为列，可以将此项目 publish 到本地某个文件夹，然后将下面的文本保成 .bat 文件：
+为了更好地重复使用，可以制作一个可执行脚本。以 Widows 平台为列，可以将此项目 publish 到本地某个文件夹，然后将下面的文本保存为 .bat 文件：
 
 ```bash
-title 项目重命名工具
 cd /d <your publish path>
 dotnet RenameTool.dll
 pause
