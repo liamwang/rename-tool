@@ -9,6 +9,7 @@ namespace RenameTool
 {
     class Program
     {
+        //增加注释 测试
         static string srcProjectPath; // 原项目路径
         static string srcProjectName; // 原项目名称
         static string newProjectPath; // 新项目路径
