@@ -8,6 +8,7 @@ namespace RenameTool
     {
         public IEnumerable<string> IgnoreFolders { get; set; } = new HashSet<string>();
         public IEnumerable<string> IgnoreExtensions { get; set; } = new HashSet<string>();
+        public IEnumerable<string> CopyFolders { get; set; } = new HashSet<string>();
 
         public static Configuration Build()
         {
@@ -20,7 +21,8 @@ namespace RenameTool
             return new Configuration
             {
                 IgnoreFolders = config[nameof(IgnoreFolders)].TrimSplit(','),
-                IgnoreExtensions = config[nameof(IgnoreExtensions)].TrimSplit(',')
+                IgnoreExtensions = config[nameof(IgnoreExtensions)].TrimSplit(','),
+                CopyFolders = config[nameof(CopyFolders)].TrimSplit(',')
             };
         }
     }

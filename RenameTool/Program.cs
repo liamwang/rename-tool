@@ -25,6 +25,9 @@ namespace RenameTool
 
             srcProjectPath = CmdReader.ReadLine("请输入原项目路径：", input => Directory.Exists(input));
             srcProjectName = CmdReader.ReadLine("请输入原项目名称：");
+
+            newProjectPath = CmdReader.ReadLine("请输入新项目路径：", input => Directory.Exists(input));
+
             newProjectName = CmdReader.ReadLine("请输入新项目名称：");
 
             Console.WriteLine("正在处理...");
@@ -33,9 +36,8 @@ namespace RenameTool
                 srcProjectName,
                 RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
 
-            newProjectPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                newProjectName);
+            //Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+            newProjectPath = Path.Combine(newProjectPath, newProjectName);
 
             Replace(srcProjectPath);
 
@@ -46,37 +48,64 @@ namespace RenameTool
 
         static void Replace(string srcDirectory)
         {
-            if (config.IgnoreFolders.Contains(Path.GetFileName(srcDirectory)))
+            string name = Path.GetFileName(srcDirectory);
+            if (config.IgnoreFolders.Contains(name))
                 return;
 
-            var directories = Directory.GetDirectories(srcDirectory);
-            if (directories.Length > 0)
-                Array.ForEach(directories, dir => Replace(dir));
+            bool copyFolderFlag = config.CopyFolders.Contains(name);
 
-            var files = Directory.GetFiles(srcDirectory);
+            if (!copyFolderFlag)
+            {
+                var directories = Directory.GetDirectories(srcDirectory);
+                if (directories.Length > 0)
+                    Array.ForEach(directories, dir => Replace(dir));
+            }
+
+            var files = copyFolderFlag ? Directory.GetFiles(srcDirectory, "*.*", SearchOption.AllDirectories) : Directory.GetFiles(srcDirectory);
             foreach (var file in files)
             {
                 if (config.IgnoreExtensions.Contains(Path.GetExtension(file)))
                     continue;
 
-                var destFile = file
-                    .Replace(srcProjectPath, newProjectPath)
-                    .Replace(srcProjectName, newProjectName);
-
-                ReplaceFile(file, destFile);
+                var destFile = file.Replace(srcProjectPath, newProjectPath).Replace(srcProjectName, newProjectName);
+                if (copyFolderFlag)
+                    CopyFile(file, destFile);
+                else
+                    ReplaceFile(file, destFile);
             }
+        }
+
+        static void CopyFile(string srcFile, string destFile)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+            File.Copy(srcFile, destFile, true);
         }
 
         static void ReplaceFile(string srcFile, string destFile)
         {
-            // Console.WriteLine($"From：{srcFile}\r\nTo：{destFile}");
+            var encoding = GetEncoding(srcFile);
 
             Directory.CreateDirectory(Path.GetDirectoryName(destFile));
 
-            var srcText = File.ReadAllText(srcFile, Encoding.UTF8);
+            var srcText = File.ReadAllText(srcFile, encoding);
             var destText = replaceRegex.Replace(srcText, newProjectName);
 
-            File.WriteAllText(destFile, destText, Encoding.UTF8);
+            File.WriteAllText(destFile, destText, encoding);
+        }
+
+        static Encoding GetEncoding(string filename)
+        {
+            // Read the BOM
+            var bom = new byte[4];
+            using (var file = new FileStream(filename, FileMode.Open)) file.Read(bom, 0, 4);
+
+            // Analyze the BOM
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
+            return Encoding.ASCII;
         }
     }
 }
