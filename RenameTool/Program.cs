@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,7 +24,11 @@ namespace RenameTool
 
             srcProjectPath = CmdReader.ReadLine("请输入原项目路径：", input => Directory.Exists(input));
             srcProjectName = CmdReader.ReadLine("请输入原项目名称：");
+
+            newProjectPath = CmdReader.ReadLine("请输入新项目路径：", input => Directory.Exists(input));
             newProjectName = CmdReader.ReadLine("请输入新项目名称：");
+
+            newProjectPath = Path.Combine(newProjectPath, newProjectName);
 
             Console.WriteLine("正在处理...");
 
@@ -33,25 +36,28 @@ namespace RenameTool
                 srcProjectName,
                 RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
 
-            newProjectPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                newProjectName);
+            // 保存到桌面
+            // Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
 
-            Replace(srcProjectPath);
+            Rename(srcProjectPath);
 
             Console.WriteLine($"完成！\r\n新的项目保存在：{newProjectPath}");
             Console.Write("请按任意键退出！");
             Console.ReadKey();
         }
 
-        static void Replace(string srcDirectory)
+        static void Rename(string srcDirectory, bool isCopyFolder = false)
         {
-            if (config.IgnoreFolders.Contains(Path.GetFileName(srcDirectory)))
+            string folderName = Path.GetFileName(srcDirectory);
+
+            if (config.IgnoreFolders.Contains(folderName))
                 return;
+
+            isCopyFolder = isCopyFolder || config.CopyFolders.Contains(folderName);
 
             var directories = Directory.GetDirectories(srcDirectory);
             if (directories.Length > 0)
-                Array.ForEach(directories, dir => Replace(dir));
+                Array.ForEach(directories, dir => Rename(dir, isCopyFolder));
 
             var files = Directory.GetFiles(srcDirectory);
             foreach (var file in files)
@@ -63,20 +69,28 @@ namespace RenameTool
                     .Replace(srcProjectPath, newProjectPath)
                     .Replace(srcProjectName, newProjectName);
 
-                ReplaceFile(file, destFile);
+                if (isCopyFolder)
+                    CopyFile(file, destFile);
+                else
+                    ReplaceFile(file, destFile);
             }
+        }
+
+        static void CopyFile(string srcFile, string destFile)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+            File.Copy(srcFile, destFile, true);
         }
 
         static void ReplaceFile(string srcFile, string destFile)
         {
-            // Console.WriteLine($"From：{srcFile}\r\nTo：{destFile}");
-
             Directory.CreateDirectory(Path.GetDirectoryName(destFile));
 
-            var srcText = File.ReadAllText(srcFile, Encoding.UTF8);
+            var encoding = Util.GetEncoding(srcFile);
+            var srcText = File.ReadAllText(srcFile, encoding);
             var destText = replaceRegex.Replace(srcText, newProjectName);
 
-            File.WriteAllText(destFile, destText, Encoding.UTF8);
+            File.WriteAllText(destFile, destText, encoding);
         }
     }
 }
