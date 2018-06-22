@@ -3,9 +3,9 @@
 
 ## 如何使用
 
-Clone 此项目后直接运行，然后按下图操作（超简单）：
+Clone 此项目后直接运行，然后根据命令行提示按下图操作：
 
-![截图](https://user-images.githubusercontent.com/5000396/31938101-28e9fa08-b8e9-11e7-852a-1361c65fe28a.gif)
+![效果图](https://user-images.githubusercontent.com/5000396/41758271-26985a08-761a-11e8-8881-1b0c1c9abe9f.png)
 
 ## 如何更好地使用
 
